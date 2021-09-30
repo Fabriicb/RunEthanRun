@@ -4,19 +4,44 @@ using UnityEngine;
 
 public class CameraThirdperson : MonoBehaviour
 {
-    public Vector3 offsett;
-    [SerializeField]
-    private Transform target;
-    public float lerpValue;
-    public float sensibility;
+    public GameObject target;
+    public Vector3 v3;
+    public float speed;
+    public float maxLook;
+    public float minLook;
+    public Quaternion camRotation;
 
-    
-    
-    void LateUpdate()
+    private void Start()
     {
-        transform.position = Vector3.Lerp(transform.position, target.position + offsett, lerpValue);
-        offsett = Quaternion.AngleAxis(Input.GetAxis("Mouse X")*sensibility,Vector3.up)*offsett;
-        transform.LookAt(target);
+        camRotation = transform.localRotation;
+    }
+
+    public void Cam()
+    {
+
+        if (target)
+        {
+            transform.position = target.transform.position + v3;
+        }
+
+        camRotation.y += Input.GetAxis("Mouse X") * speed;
+        camRotation.x += Input.GetAxis("Mouse Y") * speed *-1;
+
+        camRotation.x = Mathf.Clamp(camRotation.x, minLook, maxLook);
+
+        transform.localRotation = Quaternion.Euler(camRotation.x, camRotation.y, camRotation.z);
 
     }
+
+    private void Update()
+    {
+        Cam();
+    }
+
+
+
+
+
+
+
 }
